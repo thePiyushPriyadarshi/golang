@@ -102,7 +102,7 @@ func main(){
 		return c.SendString("Server is running and up")
 	})
 	app.Get("/evn", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, ENV",os.Getenv("TEST_ENV"))
+		return c.SendString("Hello, ENV"+os.Getenv("TEST_ENV"))
 	})
   port := os.Getenv("PORT")
 
