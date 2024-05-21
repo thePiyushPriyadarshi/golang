@@ -73,7 +73,20 @@ func register(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	var foundUser user
+	query := `SELECT id, name, email, password FROM users WHERE email=$1`
+	err = DB.QueryRow(query, newUser.Email).Scan(&foundUser.ID, &foundUser.Name, &foundUser.Email, &foundUser.Password)
+	if err == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "User Already Registered"})
+		return
+	}
+
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Error in hashing password"})
+		return
+	}
+
 	insertStmt := `insert into "users"("name","email","password") values($1,$2,$3)`
 	_, e := DB.Exec(insertStmt, newUser.Name, newUser.Email, hashedPassword)
 	if e != nil {
