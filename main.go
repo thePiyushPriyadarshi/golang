@@ -89,10 +89,6 @@ func testing(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "server is running and up", "status": true})
 
 }
-func env(c *gin.Context) {
-
-	c.JSON(http.StatusOK, gin.H{"message": "server is running and up", "status": true, "PORT": os.Getenv("TEST_ENV")})
-}
 func main() {
 	err := OpenDatabase()
 	if err != nil {
@@ -104,7 +100,6 @@ func main() {
 	router.Use(cors.Default())
 
 	router.GET("/", testing)
-	router.GET("/env", env)
 	router.POST("/login", login)
 	router.POST("/register", register)
 
