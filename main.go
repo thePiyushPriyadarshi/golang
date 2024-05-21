@@ -95,6 +95,17 @@ func main(){
 	router.POST("/register", register)
 
 	// http.HandleFunc("/createUser",createUser)
+	app := fiber.New()
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Server is running and up")
+	})
+	app.Get("/evn", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, ENV",os.Getenv("TEST_ENV"))
+	})
+  port := os.Getenv("PORT")
 
-	router.Run("localhost:8080")
+  if port == "" {
+	port = "3000"
+  }
+	router.Run("0.0.0.0:"+port)
 }
