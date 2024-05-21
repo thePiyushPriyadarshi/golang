@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -86,8 +87,11 @@ func register(c *gin.Context) {
 func testing(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "server is running and up", "status": true})
-	return
 
+}
+func env(c *gin.Context) {
+
+	c.JSON(http.StatusOK, gin.H{"message": "server is running and up", "status": true, "PORT": os.Getenv("TEST_ENV")})
 }
 func main() {
 	err := OpenDatabase()
@@ -100,8 +104,14 @@ func main() {
 	router.Use(cors.Default())
 
 	router.GET("/", testing)
+	router.GET("/env", env)
 	router.POST("/login", login)
 	router.POST("/register", register)
 
-	router.Run(":5555")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+
+	router.Run("0.0.0.0:" + port)
 }
